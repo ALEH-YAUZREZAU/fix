@@ -8,7 +8,6 @@ export const CheckAuth = <P extends object>(WrappedComponent: React.ComponentTyp
   const WithAuth: React.FC = ({ ...props }) => {
     const { loading } = useAuth();
 
-    console.log(loading, "loading");
     if (loading) {
       return <FullScreenLoading />;
     }

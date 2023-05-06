@@ -1,23 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { gql, useMutation } from "@apollo/client";
-
-const CREATE_WORKOUT = gql`
-  mutation CreateWorkout($input: CreateWorkoutInput!) {
-    createWorkout(input: $input) {
-      id
-      title
-      description
-      isPublic
-      tags {
-        tag {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { CREATE_WORKOUT, AVAILABLE_TAGS } from "@lib/queries";
 
 interface FormData {
   title: string;
@@ -26,37 +10,46 @@ interface FormData {
   tags: string;
 }
 
-const CreateWorkoutForm: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormData>();
+const WorkoutForm = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
   const [createWorkout] = useMutation(CREATE_WORKOUT);
+  const { loading, error, data } = useQuery(AVAILABLE_TAGS);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: any) => {
+    const { title, description, isPublic, tags } = data;
     createWorkout({
-      variables: { input: { ...data, tags: data.tags.split(",") } },
+      variables: { input: { title, description, isPublic, tags } },
     });
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label htmlFor="title">Title</label>
-        <input id="title" {...register("title")} />
+    <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2">Title</label>
+        <input
+          {...register("title", { required: true })}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        />
+        {errors.title && <p className="text-red-500 text-xs italic">Title is required</p>}
       </div>
-      <div>
-        <label htmlFor="description">Description</label>
-        <input id="description" {...register("description")} />
-      </div>
-      <div>
-        <label htmlFor="isPublic">Is Public</label>
-        <input id="isPublic" type="checkbox" {...register("isPublic")} />
-      </div>
-      <div>
-        <label htmlFor="tags">Tags (comma-separated)</label>
-        <input id="tags" {...register("tags")} />
-      </div>
-      <button type="submit">Create Workout</button>
+      {/* Add other form elements for description, isPublic, and tags */}
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        Create Workout
+      </button>
     </form>
   );
 };
 
-export default CreateWorkoutForm;
+export default WorkoutForm;

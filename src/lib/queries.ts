@@ -18,7 +18,7 @@ export const ME_QUERY = gql`
   }
 `;
 
-const MY_WORKOUTS = gql`
+export const MY_WORKOUTS = gql`
   query MyWorkouts {
     myWorkouts {
       id
@@ -33,7 +33,7 @@ const MY_WORKOUTS = gql`
   }
 `;
 
-const CREATE_WORKOUT = gql`
+export const CREATE_WORKOUT = gql`
   mutation CreateWorkout($input: CreateWorkoutInput!) {
     createWorkout(input: $input) {
       id
@@ -48,7 +48,7 @@ const CREATE_WORKOUT = gql`
   }
 `;
 
-const UPDATE_WORKOUT = gql`
+export const UPDATE_WORKOUT = gql`
   mutation UpdateWorkout($input: UpdateWorkoutInput!) {
     updateWorkout(input: $input) {
       id
@@ -63,7 +63,7 @@ const UPDATE_WORKOUT = gql`
   }
 `;
 
-const DELETE_WORKOUT = gql`
+export const DELETE_WORKOUT = gql`
   mutation DeleteWorkout($id: ID!) {
     deleteWorkout(id: $id) {
       id
@@ -71,7 +71,7 @@ const DELETE_WORKOUT = gql`
   }
 `;
 
-const AVAILABLE_TAGS = gql`
+export const AVAILABLE_TAGS = gql`
   query AvailableTags {
     availableTags {
       id
