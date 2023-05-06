@@ -40,6 +40,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Workout       Workout[]
 }
 
 model Session {
@@ -56,4 +57,31 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// Workout
+
+model Workout {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  isPublic    Boolean      @default(false)
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags        WorkoutTag[]
+}
+
+model Tag {
+  id       String       @id @default(cuid())
+  name     String       @unique
+  workouts WorkoutTag[]
+}
+
+model WorkoutTag {
+  workoutId String
+  tagId     String
+  workout   Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([workoutId, tagId])
 }

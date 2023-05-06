@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "generate": "ts-node --project tsconfig.json  node_modules/.bin/graphql-codegen",
-    "dev": "concurrently \"npm run generate\" \"next dev\" \"ts-node server/server.ts\"",
+    "dev": "concurrently \"next dev\" \"ts-node server/server.ts\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
