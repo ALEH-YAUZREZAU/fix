@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 import { useSession } from "next-auth/react";
 
@@ -37,7 +38,9 @@ export const Menu: React.FC = () => {
         <div className="text-xl font-semibold">Logo</div>
         <div className="flex items-center space-x-6">
           <a href="#" className="hover:text-yellow-400">
-            Information
+            <Link href="/workout/create" passHref>
+              Workout
+            </Link>
           </a>
           <div ref={dropdownRef} className="relative inline-block text-left">
             <button onClick={toggleDropdown} className="inline-flex justify-center items-center space-x-2">

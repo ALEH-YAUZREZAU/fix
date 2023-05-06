@@ -29,6 +29,7 @@ export const userTypeDefs = gql`
     image: String
     role: Role!
     accounts: [Account!]!
+    workouts: [Workout!]!
   }
 
   type Account {
