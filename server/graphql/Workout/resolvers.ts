@@ -25,7 +25,8 @@ export const resolvers = {
     myWorkouts: async (parent, args, context: Context) => {
       // Get the current user from the context
       const userId = context.user.id;
-      return context.prisma.workout.findMany({ where: { userId } });
+      const list = context.prisma.workout.findMany({ where: { userId } });
+      return list;
     },
     workoutsByTags: async (parent, { tags }, context: Context) => {
       return context.prisma.workout.findMany({
@@ -86,10 +87,23 @@ export const resolvers = {
     deleteWorkout: async (parent, { id }, context: Context) => {
       const userId = context.user.id;
 
+      const isOwner = await context.prisma.workout.findFirst({
+        where: {
+          id,
+          userId: context.user.id,
+        },
+      });
+
+      if (!isOwner) {
+        throw new Error("This workout don't exists or You don't have permission");
+      }
+
       // Delete the workout
       const deletedWorkout = await context.prisma.workout.delete({
         where: { id },
       });
+
+      console.log(deletedWorkout);
 
       return deletedWorkout;
     },
@@ -104,12 +118,30 @@ export const resolvers = {
       return context.prisma.user.findUnique({ where: { id: parent.userId } });
     },
     tags: async (parent, args, context: Context) => {
-      return context.prisma.workoutTag.findMany({ where: { workoutId: parent.id } });
+      const tags = context.prisma.tag.findMany({
+        where: {
+          workouts: {
+            some: {
+              workoutId: parent.id,
+            },
+          },
+        },
+      });
+
+      return tags;
     },
   },
   Tag: {
     workouts: async (parent, args, context: Context) => {
-      return context.prisma.workoutTag.findMany({ where: { tagId: parent.id } });
+      return context.prisma.workout.findMany({
+        where: {
+          tags: {
+            some: {
+              tagId: parent.id,
+            },
+          },
+        },
+      });
     },
   },
 };

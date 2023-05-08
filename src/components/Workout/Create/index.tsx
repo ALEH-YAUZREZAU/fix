@@ -2,17 +2,20 @@ import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { CREATE_WORKOUT } from "@lib/queries";
+import { useRouter } from "next/navigation";
 import Editor from "@shared/Editor";
+import { ITag } from "@components/Workout/types";
 
-import { TagSelect, Tag } from "./TagSelect";
+import { TagSelect } from "@components/Workout/Create/TagSelect";
 
 interface FormData {
   title: string;
   description: string;
   isPublic: boolean;
-  tags: Tag[];
+  tags: string[];
 }
 const CreateWorkoutForm: React.FC = () => {
+  const router = useRouter();
   const { register, handleSubmit, setValue } = useForm<FormData>();
   const [createWorkout] = useMutation(CREATE_WORKOUT);
   const [description, setDescription] = useState("");
@@ -22,8 +25,8 @@ const CreateWorkoutForm: React.FC = () => {
   //   return data?.availableTags || [];
   // }, [data]);
 
-  const onSubmit = (data: FormData) => {
-    createWorkout({
+  const onSubmit = async (data: FormData) => {
+    await createWorkout({
       variables: {
         input: {
           title: data.title,
@@ -33,9 +36,10 @@ const CreateWorkoutForm: React.FC = () => {
         },
       },
     });
+    router.push(`/workout`);
   };
 
-  const handleTagChange = (tags: Tag[]) => {
+  const handleTagChange = (tags: ITag[]) => {
     setValue(
       "tags",
       tags.map(({ id }) => id)

@@ -25,9 +25,7 @@ const MY_WORKOUTS = gql`
       title
       description
       tags {
-        tag {
-          name
-        }
+        name
       }
     }
   }
@@ -88,5 +86,14 @@ const SEARCH_TAGS = gql`
     }
   }
 `;
+const GET_WORKOUTS = gql`
+  query GetWorkouts {
+    workouts {
+      id
+      title
+      description
+    }
+  }
+`;
 
-export { ME_QUERY, MY_WORKOUTS, CREATE_WORKOUT, UPDATE_WORKOUT, DELETE_WORKOUT, SEARCH_TAGS, AVAILABLE_TAGS };
+export { ME_QUERY, MY_WORKOUTS, GET_WORKOUTS, CREATE_WORKOUT, UPDATE_WORKOUT, DELETE_WORKOUT, SEARCH_TAGS, AVAILABLE_TAGS };

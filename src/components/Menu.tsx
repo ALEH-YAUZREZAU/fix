@@ -38,7 +38,7 @@ export const Menu: React.FC = () => {
         <div className="text-xl font-semibold">Logo</div>
         <div className="flex items-center space-x-6">
           <a href="#" className="hover:text-yellow-400">
-            <Link href="/workout/create" passHref>
+            <Link href="/workout" passHref>
               Workout
             </Link>
           </a>
