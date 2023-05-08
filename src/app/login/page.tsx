@@ -1,5 +1,9 @@
 "use client";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+import { FullScreenLoading } from "@components/Loading";
 
 interface GoogleAuthButtonProps {
   onClick: () => void;
@@ -18,6 +22,18 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({ onClick }) => {
 };
 
 export default function Login() {
+  const { status, data: session } = useSession();
+  const router = useRouter();
+
+  if (status === "loading") {
+    return <FullScreenLoading />;
+  }
+
+  if (status === "authenticated") {
+    router.push("/");
+    return null;
+  }
+
   const handleGoogleAuthClick = () => {
     signIn("google", { callbackUrl: "/" });
   };

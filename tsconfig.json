@@ -39,6 +39,9 @@
       ],
       "@components/*": [
         "src/components/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
       ]
     },
     "plugins": [

@@ -12,6 +12,11 @@ enum Role {
   USER
 }
 
+enum Lang {
+  EN
+  RU
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -75,16 +80,16 @@ model Workout {
 model Tag {
   id       String       @id @default(cuid())
   name     String       @unique
+  lang     Lang         @default(EN)
   workouts WorkoutTag[]
 }
 
 model WorkoutTag {
+  id        String  @id @default(cuid())
   workoutId String
   tagId     String
   workout   Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
   tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([workoutId, tagId])
 }
 
 // Training 

@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const ME_QUERY = gql`
+const ME_QUERY = gql`
   query {
     me {
       id
@@ -18,7 +18,7 @@ export const ME_QUERY = gql`
   }
 `;
 
-export const MY_WORKOUTS = gql`
+const MY_WORKOUTS = gql`
   query MyWorkouts {
     myWorkouts {
       id
@@ -33,22 +33,22 @@ export const MY_WORKOUTS = gql`
   }
 `;
 
-export const CREATE_WORKOUT = gql`
+const CREATE_WORKOUT = gql`
   mutation CreateWorkout($input: CreateWorkoutInput!) {
     createWorkout(input: $input) {
       id
       title
       description
-      tags {
-        tag {
-          name
-        }
-      }
+      # tags {
+      #   tag {
+      #     name
+      #   }
+      # }
     }
   }
 `;
 
-export const UPDATE_WORKOUT = gql`
+const UPDATE_WORKOUT = gql`
   mutation UpdateWorkout($input: UpdateWorkoutInput!) {
     updateWorkout(input: $input) {
       id
@@ -63,7 +63,7 @@ export const UPDATE_WORKOUT = gql`
   }
 `;
 
-export const DELETE_WORKOUT = gql`
+const DELETE_WORKOUT = gql`
   mutation DeleteWorkout($id: ID!) {
     deleteWorkout(id: $id) {
       id
@@ -71,7 +71,7 @@ export const DELETE_WORKOUT = gql`
   }
 `;
 
-export const AVAILABLE_TAGS = gql`
+const AVAILABLE_TAGS = gql`
   query AvailableTags {
     availableTags {
       id
@@ -79,3 +79,14 @@ export const AVAILABLE_TAGS = gql`
     }
   }
 `;
+
+const SEARCH_TAGS = gql`
+  query SearchTags($query: String!) {
+    searchTags(query: $query) {
+      id
+      name
+    }
+  }
+`;
+
+export { ME_QUERY, MY_WORKOUTS, CREATE_WORKOUT, UPDATE_WORKOUT, DELETE_WORKOUT, SEARCH_TAGS, AVAILABLE_TAGS };

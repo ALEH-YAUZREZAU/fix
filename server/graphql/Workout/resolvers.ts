@@ -1,9 +1,21 @@
 // @ts-nocheck
-
 export const resolvers = {
   Query: {
     availableTags: async (parent, args, context) => {
       return context.prisma.tag.findMany();
+    },
+    searchTags: async (_: any, args: { query: string }, context) => {
+      const { query } = args;
+      const tags = await context.prisma.tag.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      });
+
+      return tags;
     },
     allWorkouts: async (parent, args, context) => {
       return context.prisma.workout.findMany({ where: { isPublic: true } });
@@ -26,16 +38,18 @@ export const resolvers = {
     createWorkout: async (parent, { input }, context) => {
       // Get the current user from the context
       const userId = context.user.id;
-
       // Create the workout
       const workout = await context.prisma.workout.create({
         data: {
           title: input.title,
           description: input.description,
-          isPublic: input.isPublic || false,
-          userId,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
           tags: {
-            connect: input.tags.map((tagId) => ({ tagId })),
+            connect: input.tags.map((tagId) => ({ id: tagId })),
           },
         },
       });

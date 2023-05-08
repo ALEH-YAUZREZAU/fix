@@ -1,50 +1,93 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { CREATE_WORKOUT, AVAILABLE_TAGS } from "@lib/queries";
+import { useMutation } from "@apollo/client";
+import { CREATE_WORKOUT } from "@lib/queries";
+import Editor from "@shared/Editor";
+
+import { TagSelect, Tag } from "./TagSelect";
 
 interface FormData {
   title: string;
   description: string;
   isPublic: boolean;
-  tags: string;
+  tags: Tag[];
 }
-
-const WorkoutForm = () => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm();
+const CreateWorkoutForm: React.FC = () => {
+  const { register, handleSubmit, setValue } = useForm<FormData>();
   const [createWorkout] = useMutation(CREATE_WORKOUT);
-  const { loading, error, data } = useQuery(AVAILABLE_TAGS);
+  const [description, setDescription] = useState("");
+  // const { loading, error, data } = useQuery(AVAILABLE_TAGS);
 
-  const onSubmit = (data: any) => {
-    const { title, description, isPublic, tags } = data;
+  // const tags = useMemo(() => {
+  //   return data?.availableTags || [];
+  // }, [data]);
+
+  const onSubmit = (data: FormData) => {
     createWorkout({
-      variables: { input: { title, description, isPublic, tags } },
+      variables: {
+        input: {
+          title: data.title,
+          description: data.description,
+          isPublic: data.isPublic,
+          tags: data.tags,
+        },
+      },
     });
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const handleTagChange = (tags: Tag[]) => {
+    setValue(
+      "tags",
+      tags.map(({ id }) => id)
+    );
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4 bg-white p-6 rounded-lg shadow-md">
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Title</label>
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          Title
+        </label>
         <input
+          id="title"
+          type="text"
           {...register("title", { required: true })}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
         />
-        {errors.title && <p className="text-red-500 text-xs italic">Title is required</p>}
       </div>
-      {/* Add other form elements for description, isPublic, and tags */}
+      <div className="mb-4">
+        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          Description
+        </label>
+        <Editor
+          value={description}
+          onEditorChange={(content) => {
+            setDescription(content);
+            setValue("description", content);
+          }}
+          {...register("description", { required: true })}
+        />
+      </div>
+      {/* <div className="mb-4 flex items-center">
+        <input
+          id="isPublic"
+          type="checkbox"
+          {...register("isPublic")}
+          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+        />
+        <label htmlFor="isPublic" className="ml-2 text-sm font-medium text-gray-700">
+          Public
+        </label>
+      </div> */}
+      <div className="mb-4">
+        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+          Tags
+        </label>
+        <TagSelect onChange={handleTagChange} />
+      </div>
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         Create Workout
       </button>
@@ -52,4 +95,4 @@ const WorkoutForm = () => {
   );
 };
 
-export default WorkoutForm;
+export default CreateWorkoutForm;

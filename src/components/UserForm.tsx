@@ -16,7 +16,7 @@ const UserForm: React.FC = () => {
   } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data);
+    // console.log(data);
   };
 
   return (

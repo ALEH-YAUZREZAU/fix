@@ -7,13 +7,14 @@ import { authMiddleware } from "./authMiddleware";
 
 import { userResolvers } from "./graphql/User";
 import { resolvers as workoutResolvers } from "./graphql/Workout";
+import { resolvers as trainingHistoryResolvers } from "./graphql/TrainingHistory";
 import typeDefs from "./graphql";
 
 dotenv.config({ path: ".env.local" });
 
 const prisma = new PrismaClient();
 
-const resolvers = mergeResolvers([userResolvers, workoutResolvers]);
+const resolvers = mergeResolvers([userResolvers, workoutResolvers, trainingHistoryResolvers]);
 
 const apolloServer = new ApolloServer({
   typeDefs,

@@ -1,6 +1,11 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
+  enum Lang {
+    EN
+    RU
+  }
+
   type Workout {
     id: ID!
     title: String!
@@ -13,6 +18,7 @@ export const typeDefs = gql`
   type Tag {
     id: ID!
     name: String!
+    lang: Lang
     workouts: [Workout!]!
   }
 
@@ -36,6 +42,7 @@ export const typeDefs = gql`
     myWorkouts: [Workout!]!
     workoutsByTags(tags: [ID!]!): [Workout!]!
     availableTags: [Tag!]!
+    searchTags(query: String!): [Tag!]!
   }
 
   type Mutation {

@@ -21,6 +21,10 @@ export type Account = {
   userId: Scalars['String'];
 };
 
+export type CompleteWorkoutInput = {
+  trainingHistoryId: Scalars['ID'];
+};
+
 export type CreateAccountInput = {
   provider: Scalars['String'];
   providerAccountId: Scalars['String'];
@@ -42,12 +46,24 @@ export type CreateWorkoutInput = {
   title: Scalars['String'];
 };
 
+export enum Lang {
+  En = 'EN',
+  Ru = 'RU'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
+  completeWorkout: TrainingHistory;
   createWorkout: Workout;
   deleteWorkout: Workout;
+  startWorkout: TrainingHistory;
   updateUser: User;
   updateWorkout: Workout;
+};
+
+
+export type MutationCompleteWorkoutArgs = {
+  input: CompleteWorkoutInput;
 };
 
 
@@ -58,6 +74,11 @@ export type MutationCreateWorkoutArgs = {
 
 export type MutationDeleteWorkoutArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationStartWorkoutArgs = {
+  input: StartWorkoutInput;
 };
 
 
@@ -74,9 +95,17 @@ export type Query = {
   __typename?: 'Query';
   allWorkouts: Array<Workout>;
   availableTags: Array<Tag>;
+  currentWorkout?: Maybe<TrainingHistory>;
   me: User;
   myWorkouts: Array<Workout>;
+  searchTags: Array<Tag>;
+  trainingHistory: Array<TrainingHistory>;
   workoutsByTags: Array<Workout>;
+};
+
+
+export type QuerySearchTagsArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -89,11 +118,27 @@ export enum Role {
   User = 'USER'
 }
 
+export type StartWorkoutInput = {
+  comment?: InputMaybe<Scalars['String']>;
+  workoutId: Scalars['ID'];
+};
+
 export type Tag = {
   __typename?: 'Tag';
   id: Scalars['ID'];
+  lang?: Maybe<Lang>;
   name: Scalars['String'];
   workouts: Array<Workout>;
+};
+
+export type TrainingHistory = {
+  __typename?: 'TrainingHistory';
+  comment?: Maybe<Scalars['String']>;
+  completionDate?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  startDate: Scalars['String'];
+  user: User;
+  workout: Workout;
 };
 
 export type UpdateUserInput = {
@@ -120,6 +165,7 @@ export type User = {
   image?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   role: Role;
+  workouts: Array<Workout>;
 };
 
 export type Workout = {
