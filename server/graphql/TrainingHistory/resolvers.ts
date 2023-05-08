@@ -1,8 +1,9 @@
 // @ts-nocheck
+import { Context } from "../../types";
 
 export const resolvers = {
   Query: {
-    currentWorkout: async (parent, args, context) => {
+    currentWorkout: async (parent, args, context: Context) => {
       const userId = context.user.id;
 
       const currentWorkout = await context.prisma.trainingHistory.findFirst({
@@ -17,7 +18,7 @@ export const resolvers = {
 
       return currentWorkout;
     },
-    trainingHistory: async (parent, args, context) => {
+    trainingHistory: async (parent, args, context: Context) => {
       const userId = context.user.id;
 
       const history = await context.prisma.trainingHistory.findMany({

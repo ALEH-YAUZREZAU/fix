@@ -56,6 +56,12 @@ const CreateWorkoutForm: React.FC = () => {
         />
       </div>
       <div className="mb-4">
+        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
+          Tags
+        </label>
+        <TagSelect onChange={handleTagChange} />
+      </div>
+      <div className="mb-4">
         <label htmlFor="description" className="block text-sm font-medium text-gray-700">
           Description
         </label>
@@ -79,12 +85,7 @@ const CreateWorkoutForm: React.FC = () => {
           Public
         </label>
       </div> */}
-      <div className="mb-4">
-        <label htmlFor="tags" className="block text-sm font-medium text-gray-700">
-          Tags
-        </label>
-        <TagSelect onChange={handleTagChange} />
-      </div>
+
       <button
         type="submit"
         className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

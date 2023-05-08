@@ -1,7 +1,9 @@
 // @ts-nocheck
+import { Context } from "../../types";
+
 export const resolvers = {
   Query: {
-    availableTags: async (parent, args, context) => {
+    availableTags: async (parent, args, context: Context) => {
       return context.prisma.tag.findMany();
     },
     searchTags: async (_: any, args: { query: string }, context) => {
@@ -17,15 +19,15 @@ export const resolvers = {
 
       return tags;
     },
-    allWorkouts: async (parent, args, context) => {
+    allWorkouts: async (parent, args, context: Context) => {
       return context.prisma.workout.findMany({ where: { isPublic: true } });
     },
-    myWorkouts: async (parent, args, context) => {
+    myWorkouts: async (parent, args, context: Context) => {
       // Get the current user from the context
       const userId = context.user.id;
       return context.prisma.workout.findMany({ where: { userId } });
     },
-    workoutsByTags: async (parent, { tags }, context) => {
+    workoutsByTags: async (parent, { tags }, context: Context) => {
       return context.prisma.workout.findMany({
         where: {
           isPublic: true,
@@ -35,7 +37,7 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createWorkout: async (parent, { input }, context) => {
+    createWorkout: async (parent, { input }, context: Context) => {
       // Get the current user from the context
       const userId = context.user.id;
       // Create the workout
@@ -49,14 +51,19 @@ export const resolvers = {
             },
           },
           tags: {
-            connect: input.tags.map((tagId) => ({ id: tagId })),
+            create: input.tags.map((id) => {
+              return {
+                tag: {
+                  connect: { id },
+                },
+              };
+            }),
           },
         },
       });
-
       return workout;
     },
-    updateWorkout: async (parent, { input }, context) => {
+    updateWorkout: async (parent, { input }, context: Context) => {
       const { id, title, description, isPublic, tags } = input;
       const userId = context.user.id;
 
@@ -76,7 +83,7 @@ export const resolvers = {
 
       return workout;
     },
-    deleteWorkout: async (parent, { id }, context) => {
+    deleteWorkout: async (parent, { id }, context: Context) => {
       const userId = context.user.id;
 
       // Delete the workout
@@ -88,20 +95,20 @@ export const resolvers = {
     },
   },
   User: {
-    workouts: async (parent, args, context) => {
+    workouts: async (parent, args, context: Context) => {
       return context.prisma.workout.findMany({ where: { userId: parent.id } });
     },
   },
   Workout: {
-    user: async (parent, args, context) => {
+    user: async (parent, args, context: Context) => {
       return context.prisma.user.findUnique({ where: { id: parent.userId } });
     },
-    tags: async (parent, args, context) => {
+    tags: async (parent, args, context: Context) => {
       return context.prisma.workoutTag.findMany({ where: { workoutId: parent.id } });
     },
   },
   Tag: {
-    workouts: async (parent, args, context) => {
+    workouts: async (parent, args, context: Context) => {
       return context.prisma.workoutTag.findMany({ where: { tagId: parent.id } });
     },
   },
